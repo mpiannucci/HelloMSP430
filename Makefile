@@ -19,17 +19,13 @@ MCU      = msp430g2553
 # List all the source files here
 # eg if you have a source file foo.c then list it here
 SOURCES = src/main.c
-
-# Use lines like those below to include your own libraries, include files (if you have any).
-# Changing a library won't cause a rebuild - use make clean then make.
-# this will link libboard430.a (use LIBPATH to say where it is, and take care of the order):
 #LIBS = -lcc2420 -lboard430
 
-# paths to extra libraries and extra standard includes
-#ROOTPATH = ../..
-#LIBPATH = -L$(ROOTPATH)/lib
-#INCLUDES = -I$(ROOTPATH)/include
+LIBPATH = -Llib
+INCLUDES = -Iinclude
 
+# Set the build directory 
+BUILDDIR = build
 
 # You probably don't need to change anything below this line.
 #######################################################################################
@@ -56,12 +52,9 @@ READELF  = msp430-readelf
 CP       = cp -p
 RM       = rm -f
 MV       = mv
-#Linux jtag program
-JTAGPROG = jtag.py
-#Windows jtag program
-#JTAGPROG = msp430-jtag
-PROGRAM  = $(JTAGPROG) -mEpv
-RESET    = $(JTAGPROG) -r
+
+# Linux msp430 programmer
+PROGRAM  = mspdebud rf2500
 ########################################################################################
 
 # the file which will include dependencies
@@ -86,7 +79,6 @@ $(TARGET): $(OBJECTS) Makefile
 $(DEPEND): $(SOURCES) Makefile
 	$(CC) -M ${CFLAGS} $(SOURCES) >$@
 
-
 .PHONY:	clean
 clean:
 	-$(RM) $(OBJECTS)
@@ -94,10 +86,6 @@ clean:
 	-$(RM) $(SOURCES:.c=.lst)
 	-$(RM) $(DEPEND)	
 
-.PHONY: program
-program: $(TARGET)
-	$(PROGRAM) $(TARGET)
-
-.PHONY: reset
-reset:
-	$(RESET)
+.PHONY: install
+install: $(TARGET)
+	$(PROGRAM) "prog build/$(TARGET)"
