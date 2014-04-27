@@ -13,19 +13,21 @@
 #
 # If you want to see the assembler source from file foo.c, then use make foo.lst
 
+# Set the build directory 
+BUILDPATH = bin/
+
 TARGET   = main.elf
 MCU      = msp430g2553
 
 # List all the source files here
 # eg if you have a source file foo.c then list it here
-SOURCES = src/main.c
+SOURCEPATH = src/
+SOURCEFILES = main.c
+SOURCES = $(SOURCEPATH)$(SOURCEFILES)
 #LIBS = -lcc2420 -lboard430
 
 LIBPATH = -Llib
 INCLUDES = -Iinclude
-
-# Set the build directory 
-BUILDDIR = build
 
 # You probably don't need to change anything below this line.
 #######################################################################################
@@ -54,7 +56,7 @@ RM       = rm -f
 MV       = mv
 
 # Linux msp430 programmer
-PROGRAM  = mspdebud rf2500
+PROGRAM  = mspdebug rf2500
 ########################################################################################
 
 # the file which will include dependencies
@@ -79,13 +81,20 @@ $(TARGET): $(OBJECTS) Makefile
 $(DEPEND): $(SOURCES) Makefile
 	$(CC) -M ${CFLAGS} $(SOURCES) >$@
 
+.PHONY: print_vars
+print_vars:
+	@echo $(SOURCES)
+	@echo $(OBJECTS)
+	@echo $(DEPEND)
+	@echo $(TARGET)
+
 .PHONY:	clean
 clean:
-	-$(RM) $(OBJECTS)
-	-$(RM) $(TARGET)
-	-$(RM) $(SOURCES:.c=.lst)
-	-$(RM) $(DEPEND)	
+	-$(RM) $(BUILDPATH)$(OBJECTS)
+	-$(RM) $(BUILDPATH)$(TARGET)
+	-$(RM) $(BUILDPATH)$(notdir $(SOURCES:.c=.lst))
+	-$(RM) $(BUILDPATH)$(DEPEND)	
 
 .PHONY: install
 install: $(TARGET)
-	$(PROGRAM) "prog build/$(TARGET)"
+	$(PROGRAM) "prog $(BUILDPATH)$(TARGET)"
