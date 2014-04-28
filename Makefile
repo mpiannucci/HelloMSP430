@@ -21,12 +21,12 @@ MCU      = msp430g2553
 
 # List all the source files here
 # eg if you have a source file foo.c then list it here
-SOURCEPATH = src/
-SOURCEFILES = main.c
-SOURCES = $(SOURCEPATH)$(SOURCEFILES)
+SOURCEPATH   = src/
+SOURCEFILES  = main.c
+SOURCES      = $(SOURCEPATH)$(SOURCEFILES)
 #LIBS = -lcc2420 -lboard430
 
-LIBPATH = -Llib
+LIBPATH  = -Llib
 INCLUDES = -Iinclude
 
 # You probably don't need to change anything below this line.
@@ -67,10 +67,13 @@ OBJECTS = $(SOURCES:.c=.o)
 
 $(TARGET): $(OBJECTS) Makefile
 	$(CC) $(OBJECTS) $(LDFLAGS) $(LIBS) -o $@
+	-$(MV) $(OBJECTS) $(BUILDPATH)$(notdir $(OBJECTS))
+	-$(MV) $(TARGET) $(BUILDPATH)$(notdir $(TARGET))
 
 # rule for making assembler source listing, to see the code
 %.lst : %.c
 	$(CC) -c $(CFLAGS) -Wa,-anlhd $< > $@
+	-$(MV) $(SOURCES:.c=.lst) $(BUILDPATH)$(notdir $(SOURCES:.c=.lst))
 
 # include the dependencies
 -include $(DEPEND)
@@ -80,6 +83,7 @@ $(TARGET): $(OBJECTS) Makefile
 # (otherwise use -MM instead of -M)
 $(DEPEND): $(SOURCES) Makefile
 	$(CC) -M ${CFLAGS} $(SOURCES) >$@
+	-$(MV) $(DEPEND) $(BUILDPATH)$(notdir $(DEPEND))
 
 .PHONY: print_vars
 print_vars:
@@ -90,10 +94,10 @@ print_vars:
 
 .PHONY:	clean
 clean:
-	-$(RM) $(BUILDPATH)$(OBJECTS)
+	-$(RM) $(BUILDPATH)$(notdir $(OBJECTS))
 	-$(RM) $(BUILDPATH)$(TARGET)
 	-$(RM) $(BUILDPATH)$(notdir $(SOURCES:.c=.lst))
-	-$(RM) $(BUILDPATH)$(DEPEND)	
+	-$(RM) $(BUILDPATH)$(notdir $(DEPEND))
 
 .PHONY: install
 install: $(TARGET)
