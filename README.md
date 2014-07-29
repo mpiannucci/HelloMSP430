@@ -9,3 +9,9 @@ Installing the compiler
 
     sudo apt-get update
     sudo apt-get install binutils-msp430 gcc-msp430 msp430-libc mspdebug
+
+Building and Running Code
+------------------------
+**To Build and flash to connected msp-430**
+
+    make install
