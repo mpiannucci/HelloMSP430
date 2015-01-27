@@ -22,7 +22,7 @@ MCU      = msp430g2553
 # List all the source files here
 # eg if you have a source file foo.c then list it here
 SOURCEPATH   = src/
-SOURCEFILES  = main.c
+SOURCEFILES  = main.cpp
 SOURCES      = $(SOURCEPATH)$(SOURCEFILES)
 #LIBS = -lcc2420 -lboard430
 
@@ -36,14 +36,15 @@ CFLAGS   = -mmcu=$(MCU) -g -O3 -Wall -Wcast-align -Wcast-qual -Wimplicit \
 	   -Wpointer-arith -Wredundant-decls -Wreturn-type -Wshadow \
 	   -Wstrict-prototypes -Wswitch -Wunused $(INCLUDES)
 ASFLAGS  = -mmcu=$(MCU) -x assembler-with-cpp -Wa,-gstabs
-LDFLAGS  = -mmcu=$(MCU) -Wl $(LIBPATH)
+LDFLAGS  = -mmcu=$(MCU) $(LIBPATH)
 
 ########################################################################################
 
 CC       = msp430-gcc
+CXX      = msp430-g++
+AS       = msp430-gcc -x assembler-with-cpp
 LD       = msp430-ld
 AR       = msp430-ar
-AS       = msp430-gcc
 GASP     = msp430-gasp
 NM       = msp430-nm
 OBJCOPY  = msp430-objcopy
