@@ -15,3 +15,8 @@ Building and Running Code
 **To Build and flash to connected msp-430**
 
     make install
+
+Quick note
+------------------------
+
+Because I write code on OSX, I have copied the header for the msp430g2553 to the project directory for autocompletion and quick reference.
