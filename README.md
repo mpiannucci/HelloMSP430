@@ -1,7 +1,7 @@
 HelloMSP430
 ===========
 
-Simple example for the MSP 430 using the msp430-gcc toolchain. Just playing with device and testing out its limits.
+Simple example for the MSP 430 using the msp430-gcc toolchain and using msp430-g++. Just playing with device and testing out its limits.
 
 Installing the compiler
 ------------------------
@@ -12,9 +12,16 @@ Installing the compiler
 
 Building and Running Code
 ------------------------
-**To Build and flash to connected msp-430**
+**To Build for the msp430**
+    
+    cd build/
+    cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/msp430.cmake
+    make 
 
-    make install
+**To Flash to Connected msp430**
+
+    mspdebug rf2500 "prog hello_msp.elf"
+
 
 Quick note
 ------------------------
