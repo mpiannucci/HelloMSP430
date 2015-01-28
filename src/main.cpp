@@ -23,7 +23,7 @@ int main(void) {
     for (;;) {
 
         // Toggle the green LED
-        LED::toggleRedLED();
+        LED::toggleGreenLED();
 
         // Delay a little
         for(int i=0; i< 30000; i++);
