@@ -3,14 +3,20 @@
 
 #include "msp430g2553.h"
 
-void Configure(unsigned divider,
-               unsigned char firstModulation,
-               unsigned char secondModulation);
+namespace UART {
 
-int HasData();
+void init(unsigned divider,
+          unsigned char firstModulation,
+          unsigned char secondModulation);
 
-unsigned char Read();
+bool hasData();
 
-void Write(unsigned char byte);
+unsigned char readByte();
+
+void writeByte(unsigned char byte);
+
+void writeString(const char* string);
+
+} // namespace
 
 #endif

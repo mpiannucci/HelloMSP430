@@ -41,7 +41,7 @@ else()
   message(STATUS "MCU defined as '${MCU}'")
 endif()
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -mmcu=${MCU} -Os -g -ffunction-sections -fdata-sections" CACHE STRING "C++ Flags")
+set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -Os -g -ffunction-sections -fdata-sections" CACHE STRING "C++ Flags")
 set(CMAKE_CXX_LINK_FLAGS "-Wl,-gc-sections" CACHE STRING "Linker Flags")
 
 set(CMAKE_C_FLAGS "-mmcu=${MCU} -Os -g -ffunction-sections -fdata-sections" CACHE STRING "C Flags")
