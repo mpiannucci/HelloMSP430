@@ -25,3 +25,6 @@
 
 # Sublime Workspace Files
 *.sublime-workspace
+
+# OSX cache files
+*.DS_Store

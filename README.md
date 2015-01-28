@@ -1,7 +1,7 @@
 HelloMSP430
 ===========
 
-Simple blinking light example for the MSP 430 using the msp430-gcc toolchain (Ubuntu Linux)
+Simple example for the MSP 430 using the msp430-gcc toolchain. Just playing with device and testing out its limits.
 
 Installing the compiler
 ------------------------
