@@ -21,11 +21,3 @@ Building and Running Code
 **To Flash to Connected msp430**
 
     mspdebug rf2500 "prog hello_msp.elf"
-
-
-Quick note
-------------------------
-
-Because I write code on OSX, I have copied the header for the msp430g2553 to the project directory for autocompletion and quick reference.
-
-Take a look at [this](http://blog.mpiannucci.com/view/msp430osx) to see the stupid (but convienent) way I set this up.
