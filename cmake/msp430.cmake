@@ -1,52 +1,18 @@
-# TOOLCHAIN FILE for MSP430
-#
-# Not yet tested with plain C stuff but with C++
-#
-# Usage:
-# cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/msp430.cmake
+INCLUDE(CMakeForceCompiler)
 
-if( DEFINED CMAKE_CROSSCOMPILING )
-  # subsequent toolchain loading is not really needed
-  return()
-endif()
-
-find_program(MSP430_CC /Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430/bin/msp430-gcc)
-find_program(MSP430_CXX /Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430/bin/msp430-g++)
-find_program(MSP430_OBJCOPY /Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430/bin/msp430-objcopy)
-find_program(MSP430_SIZE_TOOL /Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430/bin/msp430-size)
-find_program(MSP430_OBJDUMP /Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430/bin/msp430-objdump)
-
+# the name of the target operating system
 SET(CMAKE_SYSTEM_NAME Generic)
-SET(CMAKE_SYSTEM_VERSION 1)
-#SET(CMAKE_SYSTEM_PROCESSOR msp430g2553)
-SET(CMAKE_FIND_ROOT_PATH /Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430)
 
-# Compiler & Linker Settings
-include(CMakeForceCompiler)
+# specify the cross compiler
 CMAKE_FORCE_C_COMPILER(/Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430/bin/msp430-gcc GNU)
 CMAKE_FORCE_CXX_COMPILER(/Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430/bin/msp430-g++ GNU)
 
-SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+# here is the target environment located
+SET(CMAKE_FIND_ROOT_PATH  /Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430) 
 
-get_property(_CMAKE_IN_TRY_COMPILE GLOBAL PROPERTY IN_TRY_COMPILE)
-if( _CMAKE_IN_TRY_COMPILE )
-endif()
-
-if(NOT MCU)
-  message(STATUS "Setting default MCU type 'msp430g2553'")
-  set(MCU "msp430g2553" CACHE STRING "MSP430 MCU TYPE")
-else()
-  message(STATUS "MCU defined as '${MCU}'")
-endif()
-
-set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -Os -g -ffunction-sections -fdata-sections" CACHE STRING "C++ Flags")
-set(CMAKE_CXX_LINK_FLAGS "-Wl,-gc-sections" CACHE STRING "Linker Flags")
-
-set(CMAKE_C_FLAGS "-mmcu=${MCU} -Os -g -ffunction-sections -fdata-sections" CACHE STRING "C Flags")
-set(CMAKE_C_LINK_FLAGS "-Wl,-gc-sections" CACHE STRING "Linker Flags")
-
-# Use GCC for linking executables to avoid linking to stdlibc++ _BUT_ get all the math libraries etc.
-set(CMAKE_CXX_LINK_EXECUTABLE
-  "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS> -o <TARGET> ${CMAKE_GNULD_IMAGE_VERSION} <LINK_LIBRARIES>")
+# adjust the default behaviour of the FIND_XXX() commands:
+# search headers and libraries in the target environment, search 
+# programs in the host environment
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)

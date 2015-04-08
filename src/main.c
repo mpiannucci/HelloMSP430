@@ -9,7 +9,7 @@ int main(void) {
 
     for(;;) {
         P1OUT ^= 0x01; //Toggle P1.0 using exclusive-OR
-        for(count=0; count<10000; count++) {
+        for(count=0; count<20000; count++) {
             /* Insert some delay */
         }
     }
