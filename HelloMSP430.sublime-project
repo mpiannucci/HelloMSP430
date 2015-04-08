@@ -4,6 +4,10 @@
 		{
 			"follow_symlinks": true,
 			"path": "."
-		}
+		},
+        {
+            "follow_symlinks": true,
+            "path": "/Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430/msp430/include"
+        }
 	]
 }
