@@ -16,3 +16,17 @@ set(SOURCES ${SOURCE_DIRECTORY}/main.c)
 
 # Create the executable
 add_executable(hello_msp.elf ${SOURCES})
+
+# Set the mspdebug path
+# OSX using Energia
+set(MSPDEBUG_PATH /Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430/mspdebug/mspdebug)
+
+# Anything else 
+#set(MSPDEBUG_PATH mspdebug)
+
+message(${MSPDEBUG_PATH})
+
+add_custom_target(flash
+    COMMAND ${MSPDEBUG_PATH} rf2500 'prog hello_msp.elf'
+    DEPENDS hello_msp.elf
+)
