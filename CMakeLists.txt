@@ -8,7 +8,7 @@ set(CMAKE_C_FLAGS ${CPU_FLAG})
 set(CMAKE_EXE_LINKER_FLAGS ${CPU_FLAG})
 
 # Set the source files
-set(SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/source)
 set(SOURCES ${SOURCE_DIRECTORY}/main.c)
 
 # Set the header files
