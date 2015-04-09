@@ -23,9 +23,13 @@ Building and Running Code
 **To Build for the msp430**
     
     cd build/
-    cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/msp430.cmake
+    cmake ..
     make 
 
 **To Flash to Connected msp430**
+
+    make flash
+    
+or....
 
     mspdebug rf2500 "prog hello_msp.elf"
