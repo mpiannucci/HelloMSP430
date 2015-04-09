@@ -16,7 +16,7 @@ Get Energia [here](http://energia.nu/download/)
 
 **Windows**
 
-Install MSPGCC from the [TI Project Page](http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/index_FDS.html)
+Install MSPGCC from the [TI Project Page](http://sourceforge.net/projects/mspgcc/)
 
 Building and Running Code
 ------------------------
