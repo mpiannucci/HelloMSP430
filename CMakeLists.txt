@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
-
-set(CMAKE_TOOLCHAIN_FILE cmake/msp430.cmake)
-
 project(HelloMSP430)
+
+# Set the toolchain file
+set(CMAKE_TOOLCHAIN_FILE cmake/msp430.cmake)
 
 # Set the source files
 set(SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/source)
