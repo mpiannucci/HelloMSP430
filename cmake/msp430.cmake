@@ -11,6 +11,10 @@ include(CMakeForceCompiler)
 # that all of the binaries are in /usr/bin and thus in the system path. It is assumed on linux the toolchain is
 # installed by a package manager at /usr.
 #
+# - To change the target board, simply change the MSP_BOARD variable.
+# - To make a 'flash' command, call the setup_flash_target function with the TARGET NAME and DRIVER of the launchpad
+#   board.
+#
 #---------------------------------------------------------------------------------------------------------
 
 # The name of the target operating system
