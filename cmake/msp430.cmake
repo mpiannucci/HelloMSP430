@@ -1,5 +1,18 @@
 include(CMakeForceCompiler)
 
+#---------------------------------------------------------------------------------------------------------
+# CMake Toolchain File for the MSP430
+#
+# Author: Matthew Iannucci
+#
+# NOTE: A lot of the paths here are hard coded. The reason is that this depends on the Energia App being installed on 
+# OSX which should have the same path on every computer. On Windows, it could be installed anywhere and its not 
+# worth the effort to find it rather than the user just writing it for themselves. Lastly, on Linux it assumes 
+# that all of the binaries are in /usr/bin and thus in the system path. It is assumed on linux the toolchain is
+# installed by a package manager at /usr.
+#
+#---------------------------------------------------------------------------------------------------------
+
 # The name of the target operating system
 set(CMAKE_SYSTEM_NAME Generic)
 set(MSP_BOARD msp430g2553)
