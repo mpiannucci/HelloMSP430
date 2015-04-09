@@ -9,6 +9,14 @@ Installing the compiler
 
     sudo apt-get update
     sudo apt-get install binutils-msp430 gcc-msp430 msp430-libc mspdebug
+    
+**Mac OSX**
+
+Get Energia [here](http://energia.nu/download/)
+
+**Windows**
+
+Install MSPGCC from the [TI Project Page](http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/index_FDS.html)
 
 Building and Running Code
 ------------------------
