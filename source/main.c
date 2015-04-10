@@ -1,22 +1,44 @@
-#include <msp430g2553.h>
+#include <msp430.h>
 
-int main(void) {
-    unsigned int count;
+#include "uart.h"
 
-    // Stop watchdog timer
-    WDTCTL = WDTPW + WDTHOLD;
+void uart_rx_isr(unsigned char c) {
+    uart_puts((char *)"Recieved signal!\r\n");
+    P1OUT ^= BIT0;
+}
 
-    // Configure P1 to output on P1.0
-    P1OUT = 0;
-    P1DIR |= BIT6 | BIT0;
-    P1OUT |= BIT0;
+/**
+ * Main routine
+ */
+int main(void)
+{
+    WDTCTL  = WDTPW + WDTHOLD;  // Stop WDT
+    BCSCTL1 = CALBC1_1MHZ;      // Set DCO
+    DCOCTL  = CALDCO_1MHZ;
 
-    for(;;) {
-        // Toggle P1.0 using exclusive-OR
+    P1DIR  = BIT0 + BIT6;       // P1.0 and P1.6 are the red+green LEDs
+    P1OUT  = BIT0 + BIT6;       // All LEDs off
+
+    uart_init();
+
+    // register ISR called when data was received
+    uart_set_rx_isr_ptr(uart_rx_isr);
+
+    __bis_SR_register(GIE);
+
+    uart_puts((char *)"\n\r***************\n\r");
+    uart_puts((char *)"Hello MSP430\n\r");
+    uart_puts((char *)"Enter any key to toggle the LED\r\n");
+    uart_puts((char *)"***************\n\r\n\r");
+
+    volatile unsigned long i;
+
+    while(1) {
+        // Toggle the green led to show its still runnning
         P1OUT ^= BIT6;
-        P1OUT ^= BIT0;
-        for(count=0; count<50000; count++) {
-            /* Insert some delay */
+
+        for (i = 0; i < 50000; i++) {
+            // Do nothing, just delay
         }
     }
 }
