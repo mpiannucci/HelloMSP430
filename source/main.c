@@ -3,7 +3,7 @@
 #include "uart.h"
 
 void uart_rx_isr(unsigned char c) {
-    uart_puts((char *)"Recieved signal!\r\n");
+    uart_put_string((char *) "Recieved signal!\r\n");
     P1OUT ^= BIT0;
 }
 
@@ -26,10 +26,10 @@ int main(void)
 
     __bis_SR_register(GIE);
 
-    uart_puts((char *)"\n\r***************\n\r");
-    uart_puts((char *)"Hello MSP430\n\r");
-    uart_puts((char *)"Enter any key to toggle the LED\r\n");
-    uart_puts((char *)"***************\n\r\n\r");
+    uart_put_string((char *) "\n\r***************\n\r");
+    uart_put_string((char *) "Hello MSP430\n\r");
+    uart_put_string((char *) "Enter any key to toggle the LED\r\n");
+    uart_put_string((char *) "***************\n\r\n\r");
 
     volatile unsigned long i;
 

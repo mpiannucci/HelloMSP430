@@ -5,13 +5,10 @@
 
 /**
  * Receive Data (RXD) at P1.1
- */
-#define RXD		BIT1
-
-/**
  * Transmit Data (TXD) at P1.2
  */
-#define TXD		BIT2
+#define RXD	BIT1
+#define TXD	BIT2
 
 /**
  * Callback handler for recieving data through the UART buffer
@@ -47,20 +44,20 @@ void uart_set_rx_isr_ptr(void (*isr_ptr)(unsigned char c)) {
     uart_rx_isr_ptr = isr_ptr;
 }
 
-unsigned char uart_getc() {
+unsigned char uart_get_character() {
     // USCI_A0 RX buffer ready? If so return the character from the buffer
     while (!(IFG2&UCA0RXIFG));
     return UCA0RXBUF;
 }
 
-void uart_putc(unsigned char c) {
+void uart_put_character(unsigned char c) {
     // USCI_A0 TX buffer ready? If so, pass the next character from the buffer
     while (!(IFG2&UCA0TXIFG));
     UCA0TXBUF = c;
 }
 
-void uart_puts(const char *str) {
-    while(*str) uart_putc(*str++);
+void uart_put_string(const char *str) {
+    while(*str) uart_put_character(*str++);
 }
 
 interrupt(USCIAB0RX_VECTOR) USCI0RX_ISR(void) {
