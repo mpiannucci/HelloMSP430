@@ -13,7 +13,7 @@ Installing the compiler
 **Mac OSX**
 
 * Get Energia [here](http://energia.nu/download/)
-* Then install the Launchpad Drivers from [here](https://github.com/energia/Energia/wiki/Getting-Started)''
+* Then install the Launchpad Drivers from [here](https://github.com/energia/Energia/wiki/Getting-Started)
 
 **Windows**
 
