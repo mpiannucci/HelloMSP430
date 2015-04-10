@@ -1,7 +1,7 @@
 HelloMSP430
 ===========
 
-Simple example for the MSP 430 using the msp430-gcc toolchain and using msp430-g++. Just playing with device and testing out its limits.
+Simple example for the MSP 430 using the msp430-gcc toolchain. Just playing with device and testing out its limits.
 
 Installing the compiler
 ------------------------
@@ -37,4 +37,4 @@ or....
 
 You can see the serial output and interact with the board using `screen`
 
-    screen /dev/tty[YOUR INTERFACE] 9600
+    screen /dev/tty[YOUR DEVICE INTERFACE] 9600
