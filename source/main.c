@@ -1,24 +1,25 @@
 #include <msp430.h>
 
 #include "uart.h"
+#include "led.h"
 
 void uart_rx_isr(unsigned char c) {
     uart_put_string((char *) "Recieved signal!\r\n");
-    P1OUT ^= BIT0;
+    led_toggle_red_state();
 }
 
 /**
  * Main routine
  */
-int main(void)
-{
-    WDTCTL  = WDTPW + WDTHOLD;  // Stop WDT
-    BCSCTL1 = CALBC1_1MHZ;      // Set DCO
+int main(void) {
+    // Stop the Watchdog
+    WDTCTL  = WDTPW + WDTHOLD;
+
+    // Set system clock to 1MHz
+    BCSCTL1 = CALBC1_1MHZ;
     DCOCTL  = CALDCO_1MHZ;
 
-    P1DIR  = BIT0 + BIT6;       // P1.0 and P1.6 are the red+green LEDs
-    P1OUT  = BIT0 + BIT6;       // All LEDs off
-
+    led_init();
     uart_init();
 
     // register ISR called when data was received
@@ -35,7 +36,7 @@ int main(void)
 
     while(1) {
         // Toggle the green led to show its still runnning
-        P1OUT ^= BIT6;
+        led_toggle_green_state();
 
         for (i = 0; i < 50000; i++) {
             // Do nothing, just delay
