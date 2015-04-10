@@ -12,7 +12,8 @@ Installing the compiler
     
 **Mac OSX**
 
-Get Energia [here](http://energia.nu/download/)
+* Get Energia [here](http://energia.nu/download/)
+* Then install the Launchpad Drivers from [here](https://github.com/energia/Energia/wiki/Getting-Started)''
 
 **Windows**
 
@@ -32,4 +33,8 @@ Building and Running Code
     
 or....
 
-    mspdebug rf2500 "prog hello_msp.elf"
+    mspdebug rf2500 "prog hello_msp"
+
+You can see the serial output and interact with the board using `screen`
+
+    screen /dev/tty[YOUR INTERFACE] 9600
