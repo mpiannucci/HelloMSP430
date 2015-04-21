@@ -8,9 +8,6 @@ void uart_rx_isr(unsigned char c) {
     led_toggle_red_state();
 }
 
-/**
- * Main routine
- */
 int main(void) {
     // Stop the Watchdog
     WDTCTL  = WDTPW + WDTHOLD;

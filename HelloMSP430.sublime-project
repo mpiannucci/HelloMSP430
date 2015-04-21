@@ -11,12 +11,12 @@
     [
         {
             "name": "make_msp430",
-            "working_dir": "./build",
+            "working_dir": "${project_path}/build",
             "cmd": ["make"]
         },
         {
             "name": "flash_msp430",
-            "working_dir": "./build",
+            "working_dir": "${project_path}/build",
             "cmd": ["make", "flash"]
         }
     ]
