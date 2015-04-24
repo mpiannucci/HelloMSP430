@@ -13,6 +13,7 @@ void led_toggle_red_state(void);
 
 /**
  * Set the state of the red led
+ * 
  * @param state 0 for off, 1 for on.
  */
 void led_set_red_state(int state);
