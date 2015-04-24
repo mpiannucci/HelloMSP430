@@ -1,8 +1,14 @@
 #include "dht11.h"
 #include <msp430.h>
 
+/**
+ * Latest data read from the device
+ */
 DHT11_Data data;
 
+/**
+ * The function pointer to be executed on the timer interrupt fire
+ */
 void (*dht11_timer_isr_ptr)(void);
 
 void dht11_init() {
@@ -30,7 +36,7 @@ unsigned int dht11_check_response(void) {
     return 1;
 }
 
-unsigned int dht11_read_byte(void) {
+unsigned char dht11_read_byte(void) {
     // TODO: Receive the pending byte from the device
 
     return 1;
@@ -56,6 +62,9 @@ DHT11_Data dht11_get_data(void) {
     return data;
 }
 
+/**
+ * Timer A0 Interrupt Service Routine
+ */
 #pragma vector=TIMER0_A0_VECTOR
 __interrupt void CCR0_ISR(void) {
     if (dht11_timer_isr_ptr != 0L) {
