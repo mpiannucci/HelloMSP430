@@ -19,7 +19,7 @@ set(HEADERS ${SOURCE_DIRECTORY}/led.h
             ${SOURCE_DIRECTORY}/dht11.h)
 
 # Create the executable
-add_executable(hello_msp ${SOURCES})
+add_executable(hello_msp ${HEADERS} ${SOURCES})
 
 # Create a flash target.
 setup_flash_target(hello_msp rf2500)
