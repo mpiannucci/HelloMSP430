@@ -1,6 +1,8 @@
 #include "dht11.h"
 #include <msp430.h>
 
+#define DHT_DATA_PIN BIT4
+
 /**
  * Latest data read from the device
  */
@@ -20,6 +22,9 @@ void dht11_init() {
 
     // SMCLK, div 4, up mode,
     TA0CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
+
+    // Initialize the interrupt function pointer to NULL
+    dht11_set_timer_isr_ptr(0L);
 }
 
 void dht11_set_timer_isr_ptr(void (*isr_ptr)(void)) {
@@ -27,7 +32,23 @@ void dht11_set_timer_isr_ptr(void (*isr_ptr)(void)) {
 }
 
 void dht11_send_start_signal(void) {
-    // TODO: Send the start signal to the device
+    // Set the pin to output mode
+    P2DIR |= DHT_DATA_PIN;
+
+    // Set the pin low
+    P2OUT &= (~DHT_DATA_PIN);
+
+    // Delay for 18ms
+    __delay_cycles(25000);
+
+    // Set the pin high
+    P2OUT |= DHT_DATA_PIN;
+
+    // Delay for 20-40ms
+    __delay_cycles(35);
+
+    // Set the direction to input mode to prepare for the response
+    P2DIR &= (~DHT_DATA_PIN);
 }
 
 unsigned int dht11_check_response(void) {
