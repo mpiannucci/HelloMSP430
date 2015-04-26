@@ -21,6 +21,10 @@
                 {
                     "name": "flash",
                     "cmd": ["make", "flash"]
+                },
+                {
+                    "name": "clean",
+                    "cmd": ["make", "clean"]
                 }
             ]
         }
