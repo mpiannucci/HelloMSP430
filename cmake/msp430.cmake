@@ -11,7 +11,6 @@ include(CMakeForceCompiler)
 # that all of the binaries are in /usr/bin and thus in the system path. It is assumed on linux the toolchain is
 # installed by a package manager at /usr.
 #
-# - To change the target board, simply change the MSP_BOARD variable.
 # - To make a 'flash' command, call the setup_flash_target function with the TARGET NAME and DRIVER of the launchpad
 #   board.
 #
@@ -19,7 +18,7 @@ include(CMakeForceCompiler)
 
 # The name of the target operating system
 set(CMAKE_SYSTEM_NAME Generic)
-set(MSP_BOARD msp430g2553)
+set(MSP_TOOLCHAIN 1)
 
 # The location of the mspgcc toolchain. This may vary and need to be modified.
 if(CMAKE_HOST_APPLE)
@@ -58,12 +57,6 @@ if (CMAKE_HOST_APPLE OR CMAKE_HOST_WIN32)
 else()
     include_directories(SYSTEM ${MSP430_PATH}/include)
 endif()
-
-# Set the compiler flags (REQUIRED). This is defined here and not the toolchain file 
-# so the toolchain file can be re used for multiple boards
-set(CPU_FLAG "-mmcu=${MSP_BOARD}")
-set(CMAKE_C_FLAGS ${CPU_FLAG})
-set(CMAKE_EXE_LINKER_FLAGS ${CPU_FLAG})
 
 # Create a function that will instantiate a flash target command using mspdebug.
 # you may have to set the path to mspdebug if it is different

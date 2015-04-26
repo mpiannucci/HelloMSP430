@@ -24,8 +24,8 @@ Building and Running Code
 **To Build for the msp430**
     
     cd build/
-    cmake ..
-    make 
+    cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/msp430.cmake ../
+    make
 
 **To Flash to Connected msp430**
 

@@ -1,3 +1,17 @@
+/**
+ * uart.h
+ *
+ * Module for controlling the UART aboard the MSP430.
+ * This module uses the hardware UART by defualt. To communicate through the usb
+ * port on the Launchpad, be sure that the jumpers on the Launchpad are crossed to HW mode.
+ *
+ * HW ==|||
+ * SW |||||
+ *
+ * @author Matthew Iannucci, 2015
+ *
+ */
+
 #ifndef UART_H
 #define UART_H
 

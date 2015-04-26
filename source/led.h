@@ -1,3 +1,11 @@
+/**
+ * led.h
+ *
+ * Module for controlling the LEDs onboard the Launchpad Develepment Board.
+ *
+ * @author Matthew Iannucci, 2015
+ */
+
 #ifndef LED_H
 #define LED_H
 
@@ -13,14 +21,14 @@ void led_toggle_red_state(void);
 
 /**
  * Set the state of the red led
- * 
+ *
  * @param state 0 for off, 1 for on.
  */
 void led_set_red_state(int state);
 
 /**
  * Get the state of the red led\
- * 
+ *
  * @param state 0 for off, Non zero for on.
  */
 int led_get_red_state(void);
@@ -32,14 +40,14 @@ void led_toggle_green_state(void);
 
 /**
  * Set the state of the green led
- * 
+ *
  * @param state 0 for off, 1 for on.
  */
 void led_set_green_state(int state);
 
 /**
  * Get the state of the green led
- * 
+ *
  * @return state 0 for off, Non zero for on
  */
 int led_get_green_state(void);
