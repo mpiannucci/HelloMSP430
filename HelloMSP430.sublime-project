@@ -10,14 +10,19 @@
     "build_systems":
     [
         {
-            "name": "make_msp430",
+            "name": "msp430",
             "working_dir": "${project_path}/build",
-            "cmd": ["make"]
-        },
-        {
-            "name": "flash_msp430",
-            "working_dir": "${project_path}/build",
-            "cmd": ["make", "flash"]
+
+            "variants": [
+                {
+                    "name": "make",
+                    "cmd": ["make"]
+                },
+                {
+                    "name": "flash",
+                    "cmd": ["make", "flash"]
+                }
+            ]
         }
     ]
 }
