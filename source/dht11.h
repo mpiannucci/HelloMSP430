@@ -31,11 +31,6 @@ typedef struct DHT11_Data {
 void dht11_init(void);
 
 /**
- * Set the ISR function pointer for the internal timer used when reading data
- */
-void dht11_set_timer_isr_ptr(void (*isr_ptr)(void));
-
-/**
  * Send the start signal to tell the device to prepare to send data.
  */
 static void dht11_send_start_signal(void);

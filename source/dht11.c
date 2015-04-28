@@ -1,4 +1,5 @@
 #include "dht11.h"
+#include "timer.h"
 #include <msp430.h>
 
 #define DHT_DATA_PIN BIT4
@@ -8,27 +9,9 @@
  */
 DHT11_Data data;
 
-/**
- * The function pointer to be executed on the timer interrupt fire
- */
-void (*dht11_timer_isr_ptr)(void);
-
 void dht11_init() {
-    // Set the time to 5 Hz
-    TACCR0 = 50000;
-
-    // Enable interrupt
-    TACCTL0 = CCIE;
-
-    // SMCLK, div 4, up mode,
-    TA0CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
-
-    // Initialize the interrupt function pointer to NULL
-    dht11_set_timer_isr_ptr(0L);
-}
-
-void dht11_set_timer_isr_ptr(void (*isr_ptr)(void)) {
-    dht11_timer_isr_ptr = isr_ptr;
+    // Set up the timer
+    timer_a_init();
 }
 
 void dht11_send_start_signal(void) {
@@ -81,14 +64,4 @@ DHT11_Data dht11_get_data(void) {
         data.CheckSum = dht11_read_byte();
     }
     return data;
-}
-
-/**
- * Timer A0 Interrupt Service Routine
- */
-#pragma vector=TIMER0_A0_VECTOR
-__interrupt void CCR0_ISR(void) {
-    if (dht11_timer_isr_ptr != 0L) {
-        (dht11_timer_isr_ptr)();
-    }
 }
