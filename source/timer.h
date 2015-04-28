@@ -23,14 +23,14 @@ typedef enum {
 /**
  * Initialize Timer A0
  */
-void timer_a0_init(void);
+void timer_a_init(void);
 
 /**
  * Set the isr function pointer for CCR0 interrupts
  *
  * @param[in] isr_ptr Function pointer to call on interrupt
  */
-void timer_a0_set_isr(void (*isr_ptr)(void));
+void timer_a_set_isr(void (*isr_ptr)(void));
 
 /**
  * Set the threhold for the counter to count to
@@ -38,37 +38,37 @@ void timer_a0_set_isr(void (*isr_ptr)(void));
  *
  * @param count The count in micro seconds
  */
-void timer_a0_set_count(int count);
+void timer_a_set_count(int count);
 
 /**
  * Start the timer with the given mode
  *
  * @param mode The mode for the timer to function
  */
-void timer_a0_start(Timer_Mode mode);
+void timer_a_start(Timer_Mode mode);
 
 /**
  * Stop the timer where it is
  */
-void timer_a0_stop(void);
+void timer_a_stop(void);
 
 /**
  * Reset the timer to 0
  */
-void timer_a0_reset(void);
+void timer_a_reset(void);
 
 /**
  * Enable or disable timer interrupts
  *
  * @param enable 1 for enabled, 0 for disabled
  */
-void timer_a0_enable_isr(int enable);
+void timer_a_enable_isr(int enable);
 
 /**
  * Get the count from the timer register
  *
  * @return  The count from the timer
  */
-unsigned char timer_a0_count(void);
+unsigned char timer_a_count(void);
 
 #endif // TIMER_H
