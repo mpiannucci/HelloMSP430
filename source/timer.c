@@ -40,7 +40,7 @@ void timer_a_start(Timer_Mode mode) {
 }
 
 void timer_a_stop(void) {
-    TA0CTL &= (~MC_3);
+    TA0CTL &= ~(MC_3);
 }
 
 void timer_a_reset(void) {
@@ -51,12 +51,12 @@ void timer_a_enable_isr(int enable) {
     if (enable > 0) {
         TACCTL0 |= CCIE;
     } else {
-        TACCTL0 &= (~CCIE);
+        TACCTL0 &= ~(CCIE);
     }
 }
 
 void timer_a_clear_isr_flag() {
-    TACCTL0 &= (~CCIFG);
+    TACCTL0 &= ~(CCIFG);
 }
 
 unsigned char timer_a_count(void) {
@@ -72,5 +72,5 @@ __interrupt void Timer_A (void) {
     }
 
     // Clear the interrupt waiting flag
-    TACCTL0 &= (~CCIFG);
+    TACCTL0 &= ~(CCIFG);
 }

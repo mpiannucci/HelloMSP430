@@ -4,10 +4,15 @@
 #include "led.h"
 #include "dht11.h"
 
+volatile unsigned char temp_requested = 0;
 
 void uart_rx_isr(unsigned char c) {
     uart_put_string((char *) "Recieved signal!\r\n");
     led_toggle_red_state();
+
+    if (!temp_requested) {
+        temp_requested = 1;
+    }
 }
 
 int main(void) {
@@ -32,6 +37,7 @@ int main(void) {
     uart_put_string((char *) "\n\r********************************\n\r");
     uart_put_string((char *) "Hello MSP430\n\r");
     uart_put_string((char *) "Enter any key to toggle the LED\r\n");
+    uart_put_string((char *) "and read the temperature\r\n");
     uart_put_string((char *) "********************************\n\r\n\r");
 
     volatile unsigned long i;
@@ -40,10 +46,12 @@ int main(void) {
         // Toggle the green led to show its still runnning
         led_toggle_green_state();
 
-        dht11_get_data();
-
         for (i = 0; i < 50000; i++) {
-            // Do nothing, just delay
+            // Check if the temperature was requested.
+            if (temp_requested) {
+                dht11_get_data();
+                temp_requested = 0;
+            }
         }
     }
 }

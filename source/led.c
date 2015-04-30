@@ -21,7 +21,7 @@ void led_set_red_state(int state) {
     if (state) {
         P1OUT |= RED_LED;
     } else {
-        P1OUT ^= RED_LED;
+        P1OUT &= ~(RED_LED);
     }
 }
 
@@ -37,7 +37,7 @@ void led_set_green_state(int state) {
     if (state) {
         P1OUT |= GREEN_LED;
     } else {
-        P1OUT ^= GREEN_LED;
+        P1OUT &= ~(GREEN_LED);
     }
 }
 

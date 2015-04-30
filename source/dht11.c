@@ -14,6 +14,9 @@ volatile unsigned char timeout;
 volatile unsigned char ready_read_counter;
 
 void dht11_init() {
+    ready_read_counter = 0;
+    timeout = 0;
+
     // Set up the timer
     timer_a_init();
 
@@ -26,7 +29,7 @@ void dht11_send_start_signal(void) {
     P2DIR |= DHT_DATA_PIN;
 
     // Set the pin low
-    P2OUT &= (~DHT_DATA_PIN);
+    P2OUT &= ~(DHT_DATA_PIN);
 
     // Delay for 18ms
     __delay_cycles(25000);
@@ -38,7 +41,7 @@ void dht11_send_start_signal(void) {
     __delay_cycles(30);
 
     // Set the direction to input mode to prepare for the response
-    P2DIR &= (~DHT_DATA_PIN);
+    P2DIR &= ~(DHT_DATA_PIN);
 }
 
 unsigned int dht11_check_response(void) {
@@ -48,7 +51,7 @@ unsigned int dht11_check_response(void) {
     // Reset the timer, change capture value, and enable the interrupt
     timer_a_reset();
     timer_a_set_count(25);
-    timer_a_start(UP);
+    //timer_a_start(UP);
     timer_a_enable_isr(1);
 
     // Wait for the signal to go high and for the timer to expire
@@ -60,8 +63,9 @@ unsigned int dht11_check_response(void) {
 
     // Clear the timer again, and enable interrupts
     timer_a_reset();
+    timer_a_enable_isr(1);
 
-    // Wait for the data pin to go ;p and for the timer to expire
+    // Wait for the data pin to go low and for the timer to expire
     while( (P2IN & DHT_DATA_PIN) && !timeout );
 
     if (timeout) {
@@ -79,7 +83,7 @@ unsigned char dht11_read_byte(void) {
 
     // Initilaize the byte value and the counter value
     unsigned char received_value = 0;
-    unsigned char bit = 0;
+    unsigned char bit;
 
     // Switch off interrupts
     timer_a_enable_isr(0);
@@ -94,9 +98,15 @@ unsigned char dht11_read_byte(void) {
         timer_a_enable_isr(1);
 
         // ERROR: NEVER SATISFIED WHYYYYYYY -- Wait for the pin to go low again
-        while( P2IN & DHT_DATA_PIN );
+        while( P2IN & DHT_DATA_PIN ) {
+            if (timer_a_count() > 80) {
 
-        uart_put_string("Bit Read\r\n");
+                // Stop the timer count
+                timer_a_stop();
+
+                return 0;
+            }
+        };
 
         // Stop the timer count
         timer_a_stop();
@@ -121,19 +131,21 @@ unsigned int dht11_verify_checksum() {
 
 DHT11_Data dht11_get_data(void) {
 
-    // Wait for the counter to reach the accepted limit
-    while( ready_read_counter < 5 );
+    // Wait a while for the dht to be ready
+    while( ready_read_counter < 10 );
 
     // Get the data
     dht11_send_start_signal();
     if (dht11_check_response()) {
-        uart_put_string("Got Response from DHT11\r\n");
-
         data.Humidity = dht11_read_byte();
         data._humidity = dht11_read_byte();
         data.Temperature = dht11_read_byte();
         data._temperature = dht11_read_byte();
         data.CheckSum = dht11_read_byte();
+    }
+
+    if (data.CheckSum == 0) {
+        uart_put_string((char *) "Failure reading data from DHT11\r\n");
     }
 
     // Clear timer, set timer to up mode, and reset the timer overflow
