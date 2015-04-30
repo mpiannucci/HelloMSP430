@@ -2,6 +2,7 @@
 
 #include "uart.h"
 #include "led.h"
+#include "dht11.h"
 
 
 void uart_rx_isr(unsigned char c) {
@@ -17,12 +18,15 @@ int main(void) {
     BCSCTL1 = CALBC1_1MHZ;
     DCOCTL  = CALDCO_1MHZ;
 
+    // Initialize modules
     led_init();
     uart_init();
+    dht11_init();
 
     // register ISR called when data was received
     uart_set_rx_isr_ptr(uart_rx_isr);
 
+    // Enable global interrupts
     __bis_SR_register(GIE);
 
     uart_put_string((char *) "\n\r********************************\n\r");
@@ -35,6 +39,8 @@ int main(void) {
     while(1) {
         // Toggle the green led to show its still runnning
         led_toggle_green_state();
+
+        dht11_get_data();
 
         for (i = 0; i < 50000; i++) {
             // Do nothing, just delay
