@@ -17,11 +17,11 @@ void dht11_init() {
     ready_read_counter = 0;
     timeout = 0;
 
-    // Set up the timer
-    timer_a_init();
-
     // Set the timer interrupt callback
     timer_a_set_isr(dht11_isr_callback);
+
+    // Set up the timer
+    timer_a_init();
 }
 
 void dht11_send_start_signal(void) {
@@ -32,7 +32,7 @@ void dht11_send_start_signal(void) {
     P2OUT &= ~(DHT_DATA_PIN);
 
     // Delay for 18ms
-    __delay_cycles(25000);
+    __delay_cycles(18000);
 
     // Set the pin high
     P2OUT |= DHT_DATA_PIN;
@@ -98,18 +98,16 @@ unsigned char dht11_read_byte(void) {
         timer_a_enable_isr(1);
 
         // ERROR: NEVER SATISFIED WHYYYYYYY -- Wait for the pin to go low again
-        while( P2IN & DHT_DATA_PIN ) {
-            if (timer_a_count() > 80) {
-
-                // Stop the timer count
-                timer_a_stop();
-
-                return 0;
-            }
-        };
+        while( (P2IN & DHT_DATA_PIN) && !timeout);
 
         // Stop the timer count
         timer_a_stop();
+
+        if (timeout) {
+            // If the timer expired before the pin went low,
+            // return 0 to show failure.
+            return 0;
+        }
 
         // Check the timer count, if enough time passed,
         // the bit was a one so write it
@@ -145,6 +143,7 @@ DHT11_Data dht11_get_data(void) {
     }
 
     if (data.CheckSum == 0) {
+        // Make sure data was received
         uart_put_string((char *) "Failure reading data from DHT11\r\n");
     }
 
@@ -155,6 +154,11 @@ DHT11_Data dht11_get_data(void) {
 
     // Reset the counter to check that the device can handle another data read op
     ready_read_counter = 0;
+
+    if (!dht11_verify_checksum()) {
+        // Let the user know the data is invalid
+        uart_put_string((char *) "Checksum is invalid. DHT11 data is currupted\r\n");
+    }
 
     return data;
 }
