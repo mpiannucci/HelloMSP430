@@ -55,6 +55,10 @@ void timer_a_enable_isr(int enable) {
     }
 }
 
+void timer_a_clear_isr_flag() {
+    TACCTL0 &= (~CCIFG);
+}
+
 unsigned char timer_a_count(void) {
     return TAR;
 }

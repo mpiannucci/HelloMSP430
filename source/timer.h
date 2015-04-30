@@ -65,6 +65,11 @@ void timer_a_reset(void);
 void timer_a_enable_isr(int enable);
 
 /**
+ * Clears the flag signaling an interrupt is waiting
+ */
+void timer_a_clear_isr_flag();
+
+/**
  * Get the count from the timer register
  *
  * @return  The count from the timer

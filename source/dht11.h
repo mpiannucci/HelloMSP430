@@ -66,4 +66,9 @@ unsigned int dht11_verify_checksum(void);
  */
 DHT11_Data dht11_get_data(void);
 
+/**
+ * Handler for the timer interrupt.
+ */
+void dht11_isr_callback(void);
+
 #endif // DHT11_H
