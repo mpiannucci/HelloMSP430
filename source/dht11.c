@@ -34,8 +34,8 @@ void dht11_send_start_signal(void) {
     // Set the pin high
     P2OUT |= DHT_DATA_PIN;
 
-    // Delay for 20-40ms
-    __delay_cycles(35);
+    // Delay for 20-40us
+    __delay_cycles(30);
 
     // Set the direction to input mode to prepare for the response
     P2DIR &= (~DHT_DATA_PIN);
@@ -60,7 +60,6 @@ unsigned int dht11_check_response(void) {
 
     // Clear the timer again, and enable interrupts
     timer_a_reset();
-    timer_a_enable_isr(1);
 
     // Wait for the data pin to go ;p and for the timer to expire
     while( (P2IN & DHT_DATA_PIN) && !timeout );
@@ -94,8 +93,10 @@ unsigned char dht11_read_byte(void) {
         timer_a_start(UP);
         timer_a_enable_isr(1);
 
-        // Wait for the pin to go low again
+        // ERROR: NEVER SATISFIED WHYYYYYYY -- Wait for the pin to go low again
         while( P2IN & DHT_DATA_PIN );
+
+        uart_put_string("Bit Read\r\n");
 
         // Stop the timer count
         timer_a_stop();
@@ -149,5 +150,4 @@ DHT11_Data dht11_get_data(void) {
 void dht11_isr_callback(void) {
     ready_read_counter++;
     timeout = 1;
-    timer_a_clear_isr_flag();
 }
