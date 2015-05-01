@@ -17,6 +17,12 @@ void dht11_init() {
     ready_read_counter = 0;
     timeout = 0;
 
+    data.Humidity = 0;
+    data._humidity = 0;
+    data.Temperature = 0;
+    data._temperature = 0;
+    data.CheckSum = 0;
+
     // Set up the timer
     timer_a_init();
 
@@ -41,8 +47,8 @@ void dht11_send_start_signal(void) {
     // Set the pin high
     P2OUT |= DHT_DATA_PIN;
 
-    // Delay for 20-40us
-    __delay_cycles(30);
+    // Delay for 40us
+    __delay_cycles(40);
 
     // Set the direction to input mode to prepare for the response
     P2DIR &= ~(DHT_DATA_PIN);
@@ -88,9 +94,6 @@ unsigned char dht11_read_byte(void) {
     unsigned char received_value = 0;
     unsigned char bit;
 
-    // Switch off interrupts
-    timer_a_enable_isr(0);
-
     for (bit = 8; bit > 0; bit--) {
         // Wait for the pin to go high
         while( !(P2IN & DHT_DATA_PIN) );
@@ -111,6 +114,7 @@ unsigned char dht11_read_byte(void) {
             // If the timer expired before the pin went low,
             // return 0 to show failure.
             uart_put_string((char *) "Timeout\r\n");
+            uart_put_string((char *) "--------------\r\n");
             return 0;
         }
 
