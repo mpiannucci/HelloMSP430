@@ -17,11 +17,11 @@ void dht11_init() {
     ready_read_counter = 0;
     timeout = 0;
 
-    // Set the timer interrupt callback
-    timer_a_set_isr(dht11_isr_callback);
-
     // Set up the timer
     timer_a_init();
+
+    // Set the timer interrupt callback
+    timer_a_set_isr(dht11_isr_callback);
 }
 
 void dht11_send_start_signal(void) {
@@ -31,8 +31,12 @@ void dht11_send_start_signal(void) {
     // Set the pin low
     P2OUT &= ~(DHT_DATA_PIN);
 
+    P2REN &= ~(DHT_DATA_PIN);
+
     // Delay for 18ms
     __delay_cycles(18000);
+
+    P2REN |= DHT_DATA_PIN;
 
     // Set the pin high
     P2OUT |= DHT_DATA_PIN;
@@ -106,8 +110,11 @@ unsigned char dht11_read_byte(void) {
         if (timeout) {
             // If the timer expired before the pin went low,
             // return 0 to show failure.
+            uart_put_string((char *) "Timeout\r\n");
             return 0;
         }
+
+        uart_put_string((char *) "Collected Bit\r\n");
 
         // Check the timer count, if enough time passed,
         // the bit was a one so write it
