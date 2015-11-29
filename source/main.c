@@ -7,7 +7,7 @@
 volatile unsigned char temp_requested = 0;
 
 void uart_rx_isr(unsigned char c) {
-    uart_put_string((char *) "Recieved signal!\r\n");
+    uart_put_string((char *) "Recieved data request from master!\r\n");
     led_toggle_red_state();
 
     if (!temp_requested) {

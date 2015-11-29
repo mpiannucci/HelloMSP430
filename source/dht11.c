@@ -67,6 +67,7 @@ unsigned int dht11_check_response(void) {
     while ( !(P2IN & DHT_DATA_PIN) && !timeout );
 
     if (timeout) {
+        uart_put_string((char *) "Time out while waiting for DHT11 HIGH response\r\n");
         return 0;
     }
 
@@ -75,9 +76,11 @@ unsigned int dht11_check_response(void) {
     timer_a_enable_isr(1);
 
     // Wait for the data pin to go low or for the timer to expire
+    // TODO: This is currently where the program is failing!!! The low reposne is not being recieved in time.
     while( (P2IN & DHT_DATA_PIN) && !timeout );
 
     if (timeout) {
+        uart_put_string((char *) "Time out while waiting for DHT11 LOW response\r\n");
         return 0;
     } else {
         // Disable interrupts and return successful
@@ -113,12 +116,12 @@ unsigned char dht11_read_byte(void) {
         if (timeout) {
             // If the timer expired before the pin went low,
             // return 0 to show failure.
-            uart_put_string((char *) "Timeout\r\n");
+            uart_put_string((char *) "DHT11 timed out while reading byte\r\n");
             uart_put_string((char *) "--------------\r\n");
             return 0;
         }
 
-        uart_put_string((char *) "Collected Bit\r\n");
+        uart_put_string((char *) "Collected bit from DHT11\r\n");
 
         // Check the timer count, if enough time passed,
         // the bit was a one so write it
@@ -151,6 +154,8 @@ DHT11_Data dht11_get_data(void) {
         data.Temperature = dht11_read_byte();
         data._temperature = dht11_read_byte();
         data.CheckSum = dht11_read_byte();
+    } else {
+        uart_put_string((char *) "No response from DHT11 on data request\r\n");
     }
 
     // Clear timer, set timer to up mode, and reset the timer overflow
