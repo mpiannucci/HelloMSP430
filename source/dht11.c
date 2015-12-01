@@ -3,7 +3,7 @@
 #include "uart.h"
 #include <msp430.h>
 
-#define DHT_DATA_PIN BIT4
+#define DHT_DATA_PIN BIT7
 
 /**
  * Latest data read from the device
@@ -94,14 +94,17 @@ unsigned char dht11_read_byte(void) {
     unsigned char received_value = 0;
     unsigned char bit;
 
+    // Make sure the timer interrupt is disabled
+    timer_a_enable_isr(0);
+
     for (bit = 8; bit > 0; bit--) {
         // Wait for the pin to go high
         while( !(P1IN & DHT_DATA_PIN) );
 
         // Set up and start the timer
         timer_a_reset();
-        timer_a_enable_isr(1);
         timer_a_start(UP);
+        timer_a_enable_isr(1);
 
         // ERROR: NEVER SATISFIED WHYYYYYYY
         // Wait for the pin to go low again, with an expiration timer
@@ -115,14 +118,14 @@ unsigned char dht11_read_byte(void) {
             // return 0 to show failure.
             uart_put_string((char *) "DHT11 timed out while reading byte\r\n");
             return 0;
-        }
+        } else {
+            // Check the timer count, if enough time passed,
+            // the bit was a one so write it
+            if (timer_a_count() > 13) {
+                received_value |= 1 << (bit - 1);
+            }
 
-        uart_put_string((char *) "Collected bit from DHT11\r\n");
-
-        // Check the timer count, if enough time passed,
-        // the bit was a one so write it
-        if (timer_a_count() > 13) {
-            received_value |= 1 << (bit - 1);
+            uart_put_string((char *) "Collected bit from DHT11\r\n");
         }
     }
 
