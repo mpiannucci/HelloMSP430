@@ -32,26 +32,24 @@ void dht11_init() {
 
 void dht11_send_start_signal(void) {
     // Set the pin to output mode
-    P2DIR |= DHT_DATA_PIN;
+    P1DIR |= DHT_DATA_PIN;
 
     // Set the pin low
-    P2OUT &= ~(DHT_DATA_PIN);
-
-    P2REN &= ~(DHT_DATA_PIN);
+    P1OUT &= ~(DHT_DATA_PIN);
+    // P1REN &= ~(DHT_DATA_PIN);
 
     // Delay for 18ms
     __delay_cycles(18000);
 
-    P2REN |= DHT_DATA_PIN;
-
+    // P1REN |= DHT_DATA_PIN;
     // Set the pin high
-    P2OUT |= DHT_DATA_PIN;
+    P1OUT |= DHT_DATA_PIN;
 
     // Delay for 40us
     __delay_cycles(40);
 
     // Set the direction to input mode to prepare for the response
-    P2DIR &= ~(DHT_DATA_PIN);
+    P1DIR &= ~(DHT_DATA_PIN);
 }
 
 unsigned int dht11_check_response(void) {
@@ -64,7 +62,7 @@ unsigned int dht11_check_response(void) {
     timer_a_enable_isr(1);
 
     // Wait for the signal to go high or for the timer to expire
-    while ( !(P2IN & DHT_DATA_PIN) && !timeout );
+    while ( !(P1IN & DHT_DATA_PIN) && !timeout );
 
     if (timeout) {
         uart_put_string((char *) "Time out while waiting for DHT11 HIGH response\r\n");
@@ -76,8 +74,7 @@ unsigned int dht11_check_response(void) {
     timer_a_enable_isr(1);
 
     // Wait for the data pin to go low or for the timer to expire
-    // TODO: This is currently where the program is failing!!! The low reposne is not being recieved in time.
-    while( (P2IN & DHT_DATA_PIN) && !timeout );
+    while( (P1IN & DHT_DATA_PIN) && !timeout );
 
     if (timeout) {
         uart_put_string((char *) "Time out while waiting for DHT11 LOW response\r\n");
@@ -99,7 +96,7 @@ unsigned char dht11_read_byte(void) {
 
     for (bit = 8; bit > 0; bit--) {
         // Wait for the pin to go high
-        while( !(P2IN & DHT_DATA_PIN) );
+        while( !(P1IN & DHT_DATA_PIN) );
 
         // Set up and start the timer
         timer_a_reset();
@@ -108,7 +105,7 @@ unsigned char dht11_read_byte(void) {
 
         // ERROR: NEVER SATISFIED WHYYYYYYY
         // Wait for the pin to go low again, with an expiration timer
-        while( (P2IN & DHT_DATA_PIN) && !timeout);
+        while( (P1IN & DHT_DATA_PIN) && !timeout);
 
         // Stop the timer count
         timer_a_stop();
@@ -117,7 +114,6 @@ unsigned char dht11_read_byte(void) {
             // If the timer expired before the pin went low,
             // return 0 to show failure.
             uart_put_string((char *) "DHT11 timed out while reading byte\r\n");
-            uart_put_string((char *) "--------------\r\n");
             return 0;
         }
 
