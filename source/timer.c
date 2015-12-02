@@ -4,11 +4,8 @@
 void (*timer_a_isr_ptr)(void);
 
 void timer_a_init(void) {
-    // Initialize the timer to count at 5Hz
-    TACCR0 = 50000;
-
-    // SMCLK, div 4, up mode, clear
-    TA0CTL = TASSEL_2 + ID_2 + MC_1 + TACLR;
+    // SMCLK, clear
+    TA0CTL = TASSEL_2 + TACLR;
 
     // Enable timer interupts adn initialize the callback pointer ot NULL
     timer_a_set_isr(0L);
