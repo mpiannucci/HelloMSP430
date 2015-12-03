@@ -93,8 +93,10 @@ int main(void) {
                 dht11_error error = dht11_get_data(&data);
                 if (error == CHECKSUM) {
                     uart_put_string((char*) "Bad DHT Checksum\r\n");
-                } else if (error == TIMEOUT) {
-                    uart_put_string((char*) "DHT Timeout\r\n");
+                } else if (error == RESPONSE_TIMEOUT) {
+                    uart_put_string((char*) "DHT Response Timeout\r\n");
+                } else if (error == DATA_TIMEOUT) {
+                    uart_put_string((char*) "DHT Data Timeout\r\n");
                 } else {
                     uart_put_string((char *) "Got DHT Data\r\n");
                 }

@@ -55,7 +55,7 @@ dht11_error dht11_get_data(dht11_data* data) {
     start_time = TAR;
     while ( P1IN & DHT_DATA_PIN ) {
         if ((TAR - start_time) > 100) {
-            return TIMEOUT;
+            return RESPONSE_TIMEOUT;
         }
     }
     end_time = TAR;
@@ -66,14 +66,14 @@ dht11_error dht11_get_data(dht11_data* data) {
         start_time = end_time;
         while ( !(P1IN & DHT_DATA_PIN) ) {
             if ((TAR - start_time) > 100) {
-                return TIMEOUT;
+                return DATA_TIMEOUT;
             }
         }
 
         // Wait for the pin to go low again, with an expiration timer
         while ( P1IN & DHT_DATA_PIN ) {
             if ((TAR - start_time) > 200) {
-                return TIMEOUT;
+                return DATA_TIMEOUT;
             }
         }
         end_time = TAR;
@@ -87,8 +87,7 @@ dht11_error dht11_get_data(dht11_data* data) {
             mask = 0x80;
             ++raw_current;
         }
-    }
-    while ( raw_current < raw_end );
+    } while ( raw_current < raw_end );
 
     // Return to the start bit of the buffer
     raw_current -= 6;

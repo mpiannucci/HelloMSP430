@@ -27,7 +27,8 @@ typedef struct dht11_data {
 
 typedef enum {
     NONE,
-    TIMEOUT,
+    RESPONSE_TIMEOUT,
+    DATA_TIMEOUT,
     CHECKSUM
 } dht11_error;
 
