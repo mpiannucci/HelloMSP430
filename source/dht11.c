@@ -1,30 +1,36 @@
 #include "dht11.h"
-#include "timer.h"
-#include "uart.h"
 #include <msp430.h>
 
 #define DHT_DATA_PIN BIT4
 
-/**
- * Latest data read from the device
- */
-DHT11_Data data;
-
-unsigned int start_time, end_time;
-
-void dht11_init() {
-    data.Humidity = 0;
-    data._humidity = 0;
-    data.Temperature = 0;
-    data._temperature = 0;
-    data.CheckSum = 0;
-
-    // Set up the timer
-    timer_a_init();
-    timer_a_start(UP_CONTINUOUS);
+unsigned int dht11_verify_checksum(dht11_data* data) {
+    if (data->checkSum == ((data->humidity + data->temperature + data->_humidity + data->_temperature) & 0xFF)) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
-void dht11_send_start_signal(void) {
+dht11_error dht11_get_data(dht11_data* data) {
+    unsigned char raw[6];
+    unsigned char *raw_current = raw;
+    const unsigned char *raw_end = raw + 6;
+    unsigned char mask = 1;
+    register unsigned start_time, end_time;
+
+    // Setup the timer
+    TACTL = TASSEL_2 + MC_2;
+
+    // Initialize the data container
+    data->humidity = 0;
+    data->_humidity = 0;
+    data->temperature = 0;
+    data->_temperature = 0;
+    data->checkSum = 0;
+
+    // Initialize the raw data
+    raw[0] = raw[1] = raw[2] = raw[3] = raw[4] = raw[5] = 0;
+
     // Set the pin low
     P1OUT &= ~(DHT_DATA_PIN);
 
@@ -35,8 +41,8 @@ void dht11_send_start_signal(void) {
     P1REN &= ~(DHT_DATA_PIN);
 
     // Delay for 18ms
-    start_time = timer_a_count();
-    while ((timer_a_count() - start_time) < 18000);
+    start_time = TAR;
+    while ((TAR - start_time) < 18000);
 
     // Set the pin high
     P1REN |= DHT_DATA_PIN;
@@ -44,79 +50,62 @@ void dht11_send_start_signal(void) {
 
     // Set the direction to input mode to prepare for the response
     P1DIR &= ~(DHT_DATA_PIN);
-}
 
-unsigned int dht11_check_response(void) {
     // Wait for the signal to go high or for the timer to expire
+    start_time = TAR;
     while ( P1IN & DHT_DATA_PIN ) {
-        if ((timer_a_count() - start_time) > 100) {
-            uart_put_string((char *) "Time out while waiting for DHT11 LOW response int CHECK_RESPONSE\r\n");
-            return 0;
+        if ((TAR - start_time) > 100) {
+            return TIMEOUT;
         }
     }
-    end_time = timer_a_count();
-}
+    end_time = TAR;
 
-unsigned char dht11_read_byte(void) {
-    // Initilaize the byte value and the counter value
-    unsigned char received_value = 0;
-    unsigned char bit;
-
-    for (bit = 8; bit > 0; bit--) {
+    // Read the bits
+    do {
         // Wait for the pin to go high
         start_time = end_time;
         while ( !(P1IN & DHT_DATA_PIN) ) {
-            if ((timer_a_count() - start_time) > 100) {
-                uart_put_string((char *) "Time out while waiting for DHT11 HIGH response int READ_BYTE\r\n");
-                return 0;
+            if ((TAR - start_time) > 100) {
+                return TIMEOUT;
             }
         }
 
         // Wait for the pin to go low again, with an expiration timer
         while ( P1IN & DHT_DATA_PIN ) {
-            if ((timer_a_count() - start_time) > 200) {
-                uart_put_string((char *) "Time out while waiting for DHT11 LOW response in READ_BYTE\r\n");
+            if ((TAR - start_time) > 200) {
+                return TIMEOUT;
             }
         }
-        end_time = timer_a_count();
+        end_time = TAR;
 
         // Check if the bit was a one
         if ((end_time - start_time) > 110) {
-            received_value |= 1 << (bit - 1);
+            *raw_current |= 1;
+        }
+
+        if (!(mask >>= 1)) {
+            mask = 0x80;
+            ++raw_current;
         }
     }
-    return received_value;
-}
+    while ( raw_current < raw_end );
 
-unsigned int dht11_verify_checksum() {
-    if (data.CheckSum == (data.Humidity + data.Temperature + data._humidity + data._temperature)) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
+    // Return to the start bit of the buffer
+    raw_current -= 6;
 
-DHT11_Data dht11_get_data(void) {
+    data->humidity = raw[1];
+    data->_humidity = raw[2];
+    data->temperature = raw[3];
+    data->_temperature = raw[4];
+    data->checkSum = raw[5];
 
-    // Get the data
-    dht11_send_start_signal();
-    if (dht11_check_response()) {
-        data.Humidity = dht11_read_byte();
-        data._humidity = dht11_read_byte();
-        data.Temperature = dht11_read_byte();
-        data._temperature = dht11_read_byte();
-        data.CheckSum = dht11_read_byte();
-    } else {
-        uart_put_string((char *) "No response from DHT11 on data request\r\n");
-    }
-
-    if (data.CheckSum == 0) {
+    if (data->checkSum == 0) {
         // Make sure data was received
-        uart_put_string((char *) "Failure reading data from DHT11\r\n");
-    } else if (!dht11_verify_checksum()) {
+        return CHECKSUM;
+    } else if (!dht11_verify_checksum(data)) {
         // Let the user know the data is invalid
-        uart_put_string((char *) "Checksum is invalid. DHT11 data is currupted\r\n");
+        return CHECKSUM;
     }
 
-    return data;
+    return NONE;
 }

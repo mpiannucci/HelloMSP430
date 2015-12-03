@@ -5,7 +5,7 @@ void (*timer_a_isr_ptr)(void);
 
 void timer_a_init(void) {
     // SMCLK, clear
-    TA0CTL = TASSEL_2 + TACLR;
+    TA0CTL = TASSEL_2 + MC_2;
 
     // Enable timer interupts adn initialize the callback pointer ot NULL
     timer_a_set_isr(0L);
