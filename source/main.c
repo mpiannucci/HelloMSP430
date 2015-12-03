@@ -89,12 +89,14 @@ int main(void) {
             // Check if the temperature was requested.
             if (temp_requested) {
                 //unsigned char dht[6];
-                dht11_data* data;
-                dht11_error error = dht11_get_data(data);
-                if (error != NONE) {
-                    uart_put_string((char*) "Errror\r\n");
+                dht11_data data;
+                dht11_error error = dht11_get_data(&data);
+                if (error == CHECKSUM) {
+                    uart_put_string((char*) "Bad DHT Checksum\r\n");
+                } else if (error == TIMEOUT) {
+                    uart_put_string((char*) "DHT Timeout\r\n");
                 } else {
-                    uart_put_string((char *) "Got Data\r\n");
+                    uart_put_string((char *) "Got DHT Data\r\n");
                 }
                 temp_requested = 0;
             }
