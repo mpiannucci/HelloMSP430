@@ -13,9 +13,9 @@ unsigned int dht11_verify_checksum(dht11_data* data) {
 
 dht11_error dht11_get_data(dht11_data* data) {
     unsigned char raw[6];
-    unsigned char *raw_current = raw;
-    const unsigned char *raw_end = raw + 6;
-    unsigned char mask = 1;
+    const unsigned char raw_count = 6;
+    unsigned char raw_index = 0;
+    register unsigned char mask = 1;
     register unsigned start_time, end_time;
 
     // Setup the timer
@@ -80,17 +80,14 @@ dht11_error dht11_get_data(dht11_data* data) {
 
         // Check if the bit was a one
         if ((end_time - start_time) > 110) {
-            *raw_current |= 1;
+            raw[raw_index] |= mask;
         }
 
         if (!(mask >>= 1)) {
             mask = 0x80;
-            ++raw_current;
+            raw_index++;
         }
-    } while ( raw_current < raw_end );
-
-    // Return to the start bit of the buffer
-    raw_current -= 6;
+    } while ( raw_index < raw_count );
 
     data->humidity = raw[1];
     data->_humidity = raw[2];
