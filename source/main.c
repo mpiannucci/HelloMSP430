@@ -88,18 +88,29 @@ int main(void) {
         for (i = 0; i < 50000; i++) {
             // Check if the temperature was requested.
             if (temp_requested) {
-                //unsigned char dht[6];
-                dht11_data data;
-                dht11_error error = dht11_get_data(&data);
-                if (error == CHECKSUM) {
-                    uart_put_string((char*) "Bad DHT Checksum\r\n");
-                } else if (error == RESPONSE_TIMEOUT) {
-                    uart_put_string((char*) "DHT Response Timeout\r\n");
-                } else if (error == DATA_TIMEOUT) {
-                    uart_put_string((char*) "DHT Data Timeout\r\n");
+                // Original way -  WORKS!
+                unsigned char dht[6];
+                int err = read_dht(dht);
+                if (err) {
+                    uart_put_string((char *) "Error");
                 } else {
-                    uart_put_string((char *) "Got DHT Data\r\n");
+                    char temp[20];
+                    sprintf(temp, "Temp: %u", dht[3]);
+                    uart_put_string(temp);
                 }
+
+                // My way - DOESNT WORK! UGH
+                // dht11_data data;
+                // dht11_error error = dht11_get_data(&data);
+                // if (error == CHECKSUM) {
+                //     uart_put_string((char*) "Bad DHT Checksum\r\n");
+                // } else if (error == RESPONSE_TIMEOUT) {
+                //     uart_put_string((char*) "DHT Response Timeout\r\n");
+                // } else if (error == DATA_TIMEOUT) {
+                //     uart_put_string((char*) "DHT Data Timeout\r\n");
+                // } else {
+                //     uart_put_string((char *) "Got DHT Data\r\n");
+                // }
                 temp_requested = 0;
             }
         }
