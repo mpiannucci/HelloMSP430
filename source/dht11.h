@@ -49,4 +49,6 @@ unsigned int dht11_verify_checksum(dht11_data* data);
  */
 dht11_error dht11_get_data(dht11_data* data);
 
+int read_dht(unsigned char *p);
+
 #endif // DHT11_H
