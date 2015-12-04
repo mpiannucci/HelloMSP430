@@ -42,4 +42,4 @@ You can see the serial output and interact with the board using `screen`
 Credits
 ---------------------
 
-Credit to [user "oPossum" for the working logic](http://forum.43oh.com/topic/1825-interfacing-with-dht11-humidty-temp-sensor/) I used to check my work against and then ultimately use.
+Credit to [user "oPossum" for the working logic](http://forum.43oh.com/topic/1825-interfacing-with-dht11-humidty-temp-sensor/) I used to check my work on the `DHT11` against and then ultimately use.
