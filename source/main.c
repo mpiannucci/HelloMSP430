@@ -26,7 +26,6 @@ int main(void) {
     // Initialize modules
     led_init();
     uart_init();
-    //dht11_init();
 
     // register ISR called when data was received
     uart_set_rx_isr_ptr(uart_rx_isr);
@@ -49,18 +48,6 @@ int main(void) {
         for (i = 0; i < 50000; i++) {
             // Check if the temperature was requested.
             if (temp_requested) {
-                // Original way -  WORKS!
-                // unsigned char dht[6];
-                // int err = read_dht(dht);
-                // if (err) {
-                //     uart_put_string((char *) "Error");
-                // } else {
-                //     char temp[20];
-                //     sprintf(temp, "Temp: %u", dht[3]);
-                //     uart_put_string(temp);
-                // }
-
-                // My way - DOESNT WORK! UGH
                 dht11_data data;
                 dht11_error error = dht11_get_data(&data);
                 if (error == CHECKSUM) {
@@ -71,6 +58,12 @@ int main(void) {
                     uart_put_string((char*) "DHT Data Timeout\r\n");
                 } else {
                     uart_put_string((char *) "Got DHT Data\r\n");
+                    char temp[20];
+                    char humidity[20];
+                    sprintf(temp, "Temperature: %u C\r\n", data.temperature);
+                    sprintf(humidity, "Humidity: %u \%\r\n", data.humidity);
+                    uart_put_string(temp);
+                    uart_put_string(humidity);
                 }
                 temp_requested = 0;
             }
