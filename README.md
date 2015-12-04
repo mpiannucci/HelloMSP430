@@ -38,3 +38,8 @@ or....
 You can see the serial output and interact with the board using `screen`
 
     screen /dev/tty[YOUR DEVICE INTERFACE] 9600
+
+Credits
+---------------------
+
+Credit to [user "oPossum" for the working logic](http://forum.43oh.com/topic/1825-interfacing-with-dht11-humidty-temp-sensor/) I used to check my work against and then ultimately use.
