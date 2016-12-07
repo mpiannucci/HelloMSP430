@@ -20,9 +20,13 @@ include(CMakeForceCompiler)
 set(CMAKE_SYSTEM_NAME Generic)
 set(MSP_TOOLCHAIN 1)
 
+# Skip compiler checks because it depends on the MCU flag being passed
+set(CMAKE_C_COMPILER_WORKS 1)
+set(CMAKE_CXX_COMPILER_WORKS 1)
+
 # The location of the mspgcc toolchain. This may vary and need to be modified.
 if(CMAKE_HOST_APPLE)
-    set(MSP430_PATH /Applications/Energia.app/Contents/Resources/Java/hardware/tools/msp430)
+    set(MSP430_PATH /Applications/Energia.app/Contents/Java/hardware/tools/msp430)
 elseif(CMAKE_HOST_WIN32)
     set(MSP430_PATH C:/Users/miannucci/msp430)
 else()
@@ -31,14 +35,14 @@ endif()
 
 # Specify the cross compiler
 if(CMAKE_HOST_WIN32)
-    CMAKE_FORCE_C_COMPILER(${MSP430_PATH}/bin/msp430-gcc.exe GNU)
-    CMAKE_FORCE_CXX_COMPILER(${MSP430_PATH}/bin/msp430-g++.exe GNU)
+    set(CMAKE_C_COMPILER ${MSP430_PATH}/bin/msp430-gcc.exe)
+    set(CMAKE_CXX_COMPILER ${MSP430_PATH}/bin/msp430-g++.exe)
 elseif(CMAKE_HOST_APPLE)
-    CMAKE_FORCE_C_COMPILER(${MSP430_PATH}/bin/msp430-gcc GNU)
-    CMAKE_FORCE_CXX_COMPILER(${MSP430_PATH}/bin/msp430-g++ GNU)
+    set(CMAKE_C_COMPILER ${MSP430_PATH}/bin/msp430-gcc)
+    set(CMAKE_CXX_COMPILER ${MSP430_PATH}/bin/msp430-g++)
 else()
-    CMAKE_FORCE_C_COMPILER(msp430-gcc GNU)
-    CMAKE_FORCE_CXX_COMPILER(msp430-g++ GNU)
+    set(CMAKE_C_COMPILER msp430-gcc)
+    set(CMAKE_CXX_COMPILER msp430-g++)
 endif()
 
 # Where is the target environment located
@@ -61,7 +65,7 @@ endif()
 # Create a function that will instantiate a flash target command using mspdebug.
 # you may have to set the path to mspdebug if it is different
 if (CMAKE_HOST_APPLE)
-    set(MSPDEBUG_PATH ${MSP430_PATH}/mspdebug/mspdebug)
+    set(MSPDEBUG_PATH ${MSP430_PATH}/bin/mspdebug)
 else()
     set(MSPDEBUG_PATH mspdebug)
 endif()
