@@ -7,7 +7,6 @@
 volatile unsigned char temp_requested = 0;
 
 void uart_rx_isr(unsigned char c) {
-    uart_put_string((char *) "Recieved data request from master!\r\n");
     led_toggle_red_state();
 
     if (!temp_requested) {
@@ -57,7 +56,6 @@ int main(void) {
                 } else if (error == DATA_TIMEOUT) {
                     uart_put_string((char*) "DHT Data Timeout\r\n");
                 } else {
-                    uart_put_string((char *) "Got DHT Data\r\n");
                     char temp[20];
                     char humidity[20];
                     sprintf(temp, "Temperature: %u C\r\n", data.temperature);
