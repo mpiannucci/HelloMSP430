@@ -1,4 +1,5 @@
 #include <msp430.h>
+#include <stdio.h>
 
 #include "uart.h"
 #include "led.h"

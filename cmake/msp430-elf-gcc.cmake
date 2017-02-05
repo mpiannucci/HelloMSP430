@@ -1,15 +1,10 @@
 include(CMakeForceCompiler)
 
 #---------------------------------------------------------------------------------------------------------
-# CMake Toolchain File for the MSP430
+# CMake Toolchain File for the MSP430 using msp430-elf-gcc
 #
 # Author: Matthew Iannucci
 #
-# NOTE: A lot of the paths here are hard coded. The reason is that this depends on the Energia App being installed on 
-# OSX which should have the same path on every computer. On Windows, it could be installed anywhere and its not 
-# worth the effort to find it rather than the user just writing it for themselves. Lastly, on Linux it assumes 
-# that all of the binaries are in /usr/bin and thus in the system path. It is assumed on linux the toolchain is
-# installed by a package manager at /usr.
 #
 # - To make a 'flash' command, call the setup_flash_target function with the TARGET NAME and DRIVER of the launchpad
 #   board.
@@ -24,22 +19,20 @@ set(MSP_TOOLCHAIN 1)
 set(CMAKE_C_COMPILER_WORKS 1)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 
-# The location of the mspgcc toolchain. This may vary and need to be modified.
-if(CMAKE_HOST_APPLE)
-    set(MSP430_PATH /Applications/Energia.app/Contents/Java/hardware/tools/msp430)
-elseif(CMAKE_HOST_WIN32)
-    set(MSP430_PATH C:/Users/miannucci/msp430)
+# The location of the msp430-elf-gcc toolchain. This may vary and need to be modified.
+if(CMAKE_HOST_WIN32)
+    set(MSP430_PATH "C:/Program Files/msp430")
 else()
-    set(MSP430_PATH /opt/energia/hardware/tools/msp430)
+    set(MSP430_PATH /usr/local/msp430)
 endif()
 
 # Specify the cross compiler
 if(CMAKE_HOST_WIN32)
-    set(CMAKE_C_COMPILER ${MSP430_PATH}/bin/msp430-gcc.exe)
-    set(CMAKE_CXX_COMPILER ${MSP430_PATH}/bin/msp430-g++.exe)
+    set(CMAKE_C_COMPILER ${MSP430_PATH}/bin/msp430-elf-gcc.exe)
+    set(CMAKE_CXX_COMPILER ${MSP430_PATH}/bin/msp430-elf-g++.exe)
 else()
-    set(CMAKE_C_COMPILER ${MSP430_PATH}/bin/msp430-gcc)
-    set(CMAKE_CXX_COMPILER ${MSP430_PATH}/bin/msp430-g++)
+    set(CMAKE_C_COMPILER ${MSP430_PATH}/bin/msp430-elf-gcc)
+    set(CMAKE_CXX_COMPILER ${MSP430_PATH}/bin/msp430-elf-g++)
 endif()
 
 # Where is the target environment located
@@ -53,11 +46,13 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 # Include The header directory
-include_directories(SYSTEM ${MSP430_PATH}/msp430/include)
+include_directories(SYSTEM ${MSP430_PATH}/include ${MSP430_PATH}/msp430-elf/include)
+link_directories(${MSP430_PATH}/include)
 
 # Create a function that will instantiate a flash target command using mspdebug.
-# you may have to set the path to mspdebug if it is different
-set(MSPDEBUG_PATH ${MSP430_PATH}/bin/mspdebug)
+# you may have to set the path to mspdebug if it is different. In this case we are
+# assuming mspdebug is in the system PATH
+set(MSPDEBUG_PATH mspdebug)
 
 function(setup_flash_target TARGET_NAME DRIVER)
     add_custom_target(flash
