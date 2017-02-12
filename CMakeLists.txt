@@ -6,23 +6,18 @@ project(HelloMSP430)
 # be equal to the target board.
 set(MSP_CPU_FLAG -mmcu=msp430g2553)
 set(CMAKE_C_FLAGS "${MSP_CPU_FLAG}")
+set(CMAKE_CXX_FLAGS "${MSP_CPU_FLAG}")
 set(CMAKE_EXE_LINKER_FLAGS "${MSP_CPU_FLAG}")
 
 # Set the source directory
 set(SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/source)
 
 # Source Files
-set(SOURCES ${SOURCE_DIRECTORY}/main.c
-            ${SOURCE_DIRECTORY}/led.c
-            ${SOURCE_DIRECTORY}/uart.c
-            ${SOURCE_DIRECTORY}/timer.c
-            ${SOURCE_DIRECTORY}/dht11.c)
+set(SOURCES ${SOURCE_DIRECTORY}/main.cpp
+            ${SOURCE_DIRECTORY}/led.cpp)
 
 # Header files
-set(HEADERS ${SOURCE_DIRECTORY}/led.h
-            ${SOURCE_DIRECTORY}/uart.h
-            ${SOURCE_DIRECTORY}/timer.h
-            ${SOURCE_DIRECTORY}/dht11.h)
+set(HEADERS ${SOURCE_DIRECTORY}/led.h)
 
 # Create the executable
 add_executable(hello_msp ${HEADERS} ${SOURCES})
