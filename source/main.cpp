@@ -1,7 +1,10 @@
 #include <msp430.h>
 
 #include "led.h"
+#include "uart.h"
 
+LED led;
+UART uart;
 
 int main(void) {
     // Stop the Watchdog
@@ -12,7 +15,14 @@ int main(void) {
     DCOCTL  = CALDCO_1MHZ;
 
     // Initialize modules
-    LED led;
+    led.init();
+    uart.init();
+
+    // Enable global interrupts
+    __bis_SR_register(GIE);
+
+    // Print a message
+    uart.putString("\r\nHello MSP430\r\n");
 
     volatile unsigned long i;
 

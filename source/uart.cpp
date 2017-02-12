@@ -9,15 +9,11 @@
 #define RXD	BIT1
 #define TXD	BIT2
 
-/**
- * Callback handler for recieving data through the UART buffer
- */
-void (*uart_rx_isr_ptr)(unsigned char c);
+UART::UART() {
 
-void uart_init(void) {
-    // initialize the function pointer to NULL
-    uart_set_rx_isr_ptr(0L);
+}
 
+void UART::init() {
     // Select the recieve and transmit pins
     P1SEL  = RXD + TXD;
     P1SEL2 = RXD + TXD;
@@ -36,32 +32,36 @@ void uart_init(void) {
     UCA0CTL1 &= ~UCSWRST;
 
     // Enable USCI_A0 RX interrupt
-    IE2 |= UCA0RXIE;
+    //IE2 |= UCA0RXIE;
 }
 
-void uart_set_rx_isr_ptr(void (*isr_ptr)(unsigned char c)) {
-    uart_rx_isr_ptr = isr_ptr;
+void UART::setRxCallback(RxCallback callback) {
+    rxCallback = callback;
 }
 
-unsigned char uart_get_character() {
+UART::RxCallback UART::getRxCallback() {
+    return rxCallback;
+}
+
+unsigned char UART::getCharacter() {
     // USCI_A0 RX buffer ready? If so return the character from the buffer
     while (!(IFG2&UCA0RXIFG));
     return UCA0RXBUF;
 }
 
-void uart_put_character(unsigned char c) {
+void UART::putCharacter(unsigned char c) {
     // USCI_A0 TX buffer ready? If so, pass the next character from the buffer
     while (!(IFG2&UCA0TXIFG));
     UCA0TXBUF = c;
 }
 
-void uart_put_string(const char *str) {
-    while(*str) uart_put_character(*str++);
+void UART::putString(const char* str) {
+    while(*str) putCharacter(*str++);
 }
 
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void) {
-    if(uart_rx_isr_ptr != 0L) {
-        (uart_rx_isr_ptr)(UCA0RXBUF);
-    }
+    // if (false) {
+    //     (UART::getRxCallback())(UCA0RXBUF);
+    // }
 }

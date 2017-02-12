@@ -3,6 +3,9 @@
 #include "led.h"
 
 LED::LED() {
+}
+
+void LED::init() {
     // Set the direction to output for the LEDs
     P1DIR = RED | GREEN;
 

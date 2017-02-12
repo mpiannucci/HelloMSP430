@@ -14,10 +14,12 @@ set(SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/source)
 
 # Source Files
 set(SOURCES ${SOURCE_DIRECTORY}/main.cpp
-            ${SOURCE_DIRECTORY}/led.cpp)
+            ${SOURCE_DIRECTORY}/led.cpp
+            ${SOURCE_DIRECTORY}/uart.cpp)
 
 # Header files
-set(HEADERS ${SOURCE_DIRECTORY}/led.h)
+set(HEADERS ${SOURCE_DIRECTORY}/led.h
+            ${SOURCE_DIRECTORY}/uart.h)
 
 # Create the executable
 add_executable(hello_msp ${HEADERS} ${SOURCES})
