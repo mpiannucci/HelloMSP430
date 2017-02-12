@@ -9,11 +9,18 @@
 #define RXD	BIT1
 #define TXD	BIT2
 
+UART::RxCallback UART::_rxCallback = 0L;
+bool UART::initialized = false;
+
 UART::UART() {
 
 }
 
 void UART::init() {
+    if (initialized) {
+        return;
+    }
+
     // Select the recieve and transmit pins
     P1SEL  = RXD + TXD;
     P1SEL2 = RXD + TXD;
@@ -33,14 +40,16 @@ void UART::init() {
 
     // Enable USCI_A0 RX interrupt
     IE2 |= UCA0RXIE;
+
+    initialized = true;
 }
 
 void UART::setRxCallback(RxCallback callback) {
-    rxCallback = callback;
+    _rxCallback = callback;
 }
 
-UART::RxCallback UART::getRxCallback() {
-    return rxCallback;
+UART::RxCallback UART::rxCallback() {
+    return _rxCallback;
 }
 
 unsigned char UART::getCharacter() {
@@ -61,7 +70,7 @@ void UART::putString(const char* str) {
 
 __attribute__ ((interrupt(USCIAB0RX_VECTOR)))
 void USCI0RX_ISR(void) {
-    // if (false) {
-    //     (UART::getRxCallback())(UCA0RXBUF);
-    // }
+    if (UART::rxCallback() != 0L) {
+        (UART::rxCallback())(UCA0RXBUF);
+    }
 }

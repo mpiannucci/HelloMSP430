@@ -6,6 +6,10 @@
 LED led;
 UART uart;
 
+void receiveDataCallback(unsigned char data) {
+    led.toggle(LED::RED);
+}
+
 int main(void) {
     // Stop the Watchdog
     WDTCTL  = WDTPW + WDTHOLD;
@@ -17,6 +21,7 @@ int main(void) {
     // Initialize modules
     led.init();
     uart.init();
+    uart.setRxCallback(&receiveDataCallback);
 
     // Enable global interrupts
     __bis_SR_register(GIE);

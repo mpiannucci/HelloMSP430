@@ -22,14 +22,15 @@ public:
 
     UART();
     void init();
-    void setRxCallback(RxCallback callback);
-    RxCallback getRxCallback();
+    static void setRxCallback(RxCallback callback);
+    static RxCallback rxCallback();
     unsigned char getCharacter();
     void putCharacter(unsigned char c);
     void putString(const char* str);
 
 private:
-    RxCallback rxCallback = 0L;
+    static RxCallback _rxCallback;
+    static bool initialized;
 };
 
 /**
