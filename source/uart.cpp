@@ -32,7 +32,7 @@ void UART::init() {
     UCA0CTL1 &= ~UCSWRST;
 
     // Enable USCI_A0 RX interrupt
-    //IE2 |= UCA0RXIE;
+    IE2 |= UCA0RXIE;
 }
 
 void UART::setRxCallback(RxCallback callback) {
@@ -59,8 +59,8 @@ void UART::putString(const char* str) {
     while(*str) putCharacter(*str++);
 }
 
-#pragma vector=USCIAB0RX_VECTOR
-__interrupt void USCI0RX_ISR(void) {
+__attribute__ ((interrupt(USCIAB0RX_VECTOR)))
+void USCI0RX_ISR(void) {
     // if (false) {
     //     (UART::getRxCallback())(UCA0RXBUF);
     // }
