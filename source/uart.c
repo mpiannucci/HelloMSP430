@@ -59,8 +59,8 @@ void uart_put_string(const char *str) {
     while(*str) uart_put_character(*str++);
 }
 
-#pragma vector=USCIAB0RX_VECTOR
-__interrupt void USCI0RX_ISR(void) {
+__attribute__ ((interrupt(USCIAB0RX_VECTOR)))
+void USCI0RX_ISR(void) {
     if(uart_rx_isr_ptr != 0L) {
         (uart_rx_isr_ptr)(UCA0RXBUF);
     }

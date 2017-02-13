@@ -60,9 +60,8 @@ unsigned char timer_a_count(void) {
     return TAR;
 }
 
-
-#pragma vector=TIMER0_A0_VECTOR
-__interrupt void Timer_A (void) {
+__attribute__ ((interrupt(TIMER0_A0_VECTOR)))
+void Timer_A (void) {
     if (timer_a_isr_ptr != 0L) {
         // Call the interrupt function
         (timer_a_isr_ptr)();

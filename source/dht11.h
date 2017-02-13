@@ -21,7 +21,7 @@ typedef struct dht11_data {
     unsigned char _humidity;
     unsigned char temperature;
     unsigned char _temperature;
-    unsigned char checkSum;
+    unsigned char checksum;
 
 } dht11_data;
 

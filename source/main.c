@@ -50,8 +50,18 @@ int main(void) {
             if (temp_requested) {
                 dht11_data data;
                 dht11_error error = dht11_get_data(&data);
+                char temp[20];
+                char humidity[20];
+                sprintf(temp, "Temperature: %u C\r\n", data.temperature);
+                sprintf(humidity, "Humidity: %u \%\r\n", data.humidity);
+                uart_put_string(temp);
+                uart_put_string(humidity);
+
                 if (error == CHECKSUM) {
                     uart_put_string((char*) "Bad DHT Checksum\r\n");
+                    char checksum[20];
+                    sprintf(checksum, "Checksum: %u - %u\r\n", data.checksum, data.temperature + data._temperature + data.humidity + data._humidity);
+                    uart_put_string(checksum);
                 } else if (error == RESPONSE_TIMEOUT) {
                     uart_put_string((char*) "DHT Response Timeout\r\n");
                 } else if (error == DATA_TIMEOUT) {

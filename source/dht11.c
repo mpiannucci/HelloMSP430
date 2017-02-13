@@ -4,7 +4,7 @@
 #define DHT_DATA_PIN BIT4
 
 unsigned int dht11_verify_checksum(dht11_data* data) {
-    if (data->checkSum == ((data->humidity + data->temperature + data->_humidity + data->_temperature) & 0xFF)) {
+    if (data->checksum == ((data->humidity + data->temperature + data->_humidity + data->_temperature) & 0xFF)) {
         return 1;
     } else {
         return 0;
@@ -28,7 +28,7 @@ dht11_error dht11_get_data(dht11_data* data) {
     data->_humidity = 0;
     data->temperature = 0;
     data->_temperature = 0;
-    data->checkSum = 0;
+    data->checksum = 0;
 
     // Initialize the raw data
     raw[0] = raw[1] = raw[2] = raw[3] = raw[4] = raw[5] = 0;
@@ -94,9 +94,9 @@ dht11_error dht11_get_data(dht11_data* data) {
     data->_humidity = raw[2];
     data->temperature = raw[3];
     data->_temperature = raw[4];
-    data->checkSum = raw[5];
+    data->checksum = raw[5];
 
-    if (data->checkSum == 0) {
+    if (data->checksum == 0) {
         // Make sure data was received
         return CHECKSUM;
     } else if (!dht11_verify_checksum(data)) {

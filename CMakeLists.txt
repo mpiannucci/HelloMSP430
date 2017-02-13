@@ -15,13 +15,11 @@ set(SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/source)
 set(SOURCES ${SOURCE_DIRECTORY}/main.c
             ${SOURCE_DIRECTORY}/led.c
             ${SOURCE_DIRECTORY}/uart.c
-            ${SOURCE_DIRECTORY}/timer.c
             ${SOURCE_DIRECTORY}/dht11.c)
 
 # Header files
 set(HEADERS ${SOURCE_DIRECTORY}/led.h
             ${SOURCE_DIRECTORY}/uart.h
-            ${SOURCE_DIRECTORY}/timer.h
             ${SOURCE_DIRECTORY}/dht11.h)
 
 # Create the executable
