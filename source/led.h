@@ -58,6 +58,9 @@ public:
      * @param state The state to set all of the LEDS
      */
     void setAllState(LEDState state);
+
+private:
+    static bool initialized;
 };
 
 #endif // LED_H

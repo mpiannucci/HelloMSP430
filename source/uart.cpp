@@ -38,10 +38,17 @@ void UART::init() {
     // Initialize USCI state machine
     UCA0CTL1 &= ~UCSWRST;
 
-    // Enable USCI_A0 RX interrupt
-    IE2 |= UCA0RXIE;
+    enableRxInterrupt();
 
     initialized = true;
+}
+
+void UART::enableRxInterrupt() {
+    IE2 |= UCA0RXIE;
+}
+
+void UART::disableRxInterrupt() {
+    IE2 &= ~UCA0RXIE;
 }
 
 void UART::setRxCallback(RxCallback callback) {

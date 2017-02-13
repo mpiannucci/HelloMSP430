@@ -13,40 +13,56 @@
 #ifndef DHT11_H
 #define DHT11_H
 
-/**
- * Data structure to hold received data from the DHT11 temperature sensor
- */
-typedef struct dht11_data {
-    unsigned char humidity;
+class DHT11 {
+
+public:
+    /**
+     * The possible error codes when reading from the DHT11 sensor
+     */
+    enum Error {
+        NONE,
+        RESPONSE_TIMEOUT,
+        DATA_TIMEOUT_1,
+        DATA_TIMEOUT_2,
+        CHECKSUM
+    };
+
+    /**
+     * Get a new instance of the DHT11 interface
+     */
+    DHT11();
+
+    /**
+     * Fetch the latest temperature and humidity data from the DHT11 sensor
+     * @return The error code encountered when reading from the sensor. NONE indicates a successful read.
+     */
+    Error fetchData();
+
+    /**
+     * Verify the validity of the latest data recorded
+     * @return True if valid, false otherwise
+     */
+    bool verifyChecksum();
+
+    /**
+     * Get the latest temperature that was read
+     * @return The temperature in degrees celsius
+     */
+    unsigned int temperature() const;
+
+    /**
+     * Get the latest humidity that was read
+     * @return The percent humidity
+     */
+    unsigned int humidity() const;
+
+private:
     unsigned char _humidity;
-    unsigned char temperature;
     unsigned char _temperature;
-    unsigned char checkSum;
+    unsigned char _checksum;
 
-} dht11_data;
-
-typedef enum {
-    NONE,
-    RESPONSE_TIMEOUT,
-    DATA_TIMEOUT,
-    CHECKSUM
-} dht11_error;
-
-/**
- * Verify that the data was received correctly.
- *
- * @return  1 if the data received matches the checksum, 0 otherwise
- */
-unsigned int dht11_verify_checksum(dht11_data* data);
-
-/**
- * Get a packet of data from the device.
- * This function will send the start signal, check the response, and then read the data into a dht11_data
- * structure. This way, the user can simply call one function to receive all data. If you want to verify the
- * data, call dht_verify_checksum after this function, but before reading another packet.
- * @param  data The pointer of type dht11_data for the new data to be read into
- * @return  The error message as the dht11_error type
- */
-dht11_error dht11_get_data(dht11_data* data);
+    unsigned char __humidity__;
+    unsigned char __temperature__;
+};
 
 #endif // DHT11_H

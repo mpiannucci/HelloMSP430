@@ -2,14 +2,22 @@
 
 #include "led.h"
 
+bool LED::initialized = false;
+
 LED::LED() {
 }
 
 void LED::init() {
+    if (initialized) {
+        return;
+    }
+
     // Set the direction to output for the LEDs
     P1DIR = RED | GREEN;
 
     setAllState(OFF);
+
+    initialized = true;
 }
 
 void LED::toggle(LEDColor color) {

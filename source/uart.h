@@ -18,52 +18,58 @@
 class UART {
 
 public:
+    /**
+     * A callback for receiving data through the UART
+     */
     typedef void (*RxCallback)(unsigned char c);
 
+    /**
+     * Constructor
+     */
     UART();
+
+    /**
+     * Initializes the UART, will only occur once
+     */
     void init();
+
+    void enableRxInterrupt();
+
+    void disableRxInterrupt();
+
+    /**
+     * Sets the interrupt for data being received through the UART
+     * @param callback The function to call as in interrupt handler
+     */
     static void setRxCallback(RxCallback callback);
+
+    /**
+     * Get the rx interrupt callback
+     * @return The rx interrupt callback
+     */
     static RxCallback rxCallback();
+
+    /**
+     * Gets the first character in the RX buffer
+     * @return The first character read through RX
+     */
     unsigned char getCharacter();
+
+    /**
+     * Send a character through the TX buffer
+     * @param c The character to send
+     */
     void putCharacter(unsigned char c);
+
+    /**
+     * Send a string through the TX buffer
+     * @param str The string to send
+     */
     void putString(const char* str);
 
 private:
     static RxCallback _rxCallback;
     static bool initialized;
 };
-
-/**
- * Initialize UART.
- */
-//void uart_init(void);
-
-/**
- * Set function pointer for ISR to call when data was received.
- *
- * @param[in] *isr_ptr	Function pointer to call when ISR received.
- */
-//void uart_set_rx_isr_ptr(void (*isr_ptr)(unsigned char c));
-
-/**
- * Read one character from the UART buffer.
- *
- * @return The character received.
- */
-//unsigned char uart_get_character();
-
-/**
- * Write one chracter to the UART buffer.
- *
- * @param[in] c	The character to write.
- */
-//void uart_put_character(unsigned char c);
-
-/**
- * Write string to the UART buffer.
- *
- * @param[in] c The string to write to the buffer. Must be terminated by \0.
- */
-//void uart_put_string(const char *str);
 
 #endif // UART_H
